@@ -1,7 +1,9 @@
 package com.xing2387.xposedtest;
 
 import android.content.ContentResolver;
+import android.net.wifi.WifiInfo;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -25,7 +27,7 @@ public class MyModule implements IXposedHookLoadPackage {
     private static final String TAG_GS = "MyModule-GS";
 
     private HashMap<String, HashMap<String, ArrayList<String>>> hookList = new HashMap<String, HashMap<String, ArrayList<String>>>() {{
-        put("android.telephony.TelephonyManager", new HashMap<String, ArrayList<String>>() {{
+        put(TelephonyManager.class.getName(), new HashMap<String, ArrayList<String>>() {{
             //IMEI
             put("getImei", new ArrayList<String>() {{
                 add("int");
@@ -37,7 +39,7 @@ public class MyModule implements IXposedHookLoadPackage {
 //            put("getAllCellInfo", new ArrayList<>());
 //
 //            //sim卡信息
-//            put("getSubscriberId", new ArrayList<String>() {{
+//            put("getSubscriberId", new ArrayList<String>() {{     //IMSI
 //                add("int");
 //            }});
 //            put("getSimSerialNumber", new ArrayList<String>() {{
@@ -49,8 +51,11 @@ public class MyModule implements IXposedHookLoadPackage {
 //            put("getSimCountryIsoForPhone", new ArrayList<String>() {{
 //                add("int");
 //            }});
+//            put("getSimOperatorNameForPhone", new ArrayList<String>() {{  //运营商
+//                add("int");
+//            }});
         }});
-        put("android.net.wifi.WifiInfo", new HashMap<String, ArrayList<String>>() {{
+        put(WifiInfo.class.getName(), new HashMap<String, ArrayList<String>>() {{
             //MAC地址
             put("getMacAddress", new ArrayList<>());
             //获取IP地址
@@ -68,7 +73,7 @@ public class MyModule implements IXposedHookLoadPackage {
 //            put("getScanResults", new ArrayList<>());
 //        }});
 
-        put("android.provider.Settings.Secure", new HashMap<String, ArrayList<String>>() {{
+        put(Settings.Secure.class.getName(), new HashMap<String, ArrayList<String>>() {{
             //android_id
             put("getString", new ArrayList<String>() {{
                 //Settings.Secure.ANDROID_ID
