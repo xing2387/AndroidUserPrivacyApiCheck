@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.lang.reflect.Method;
+import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,7 @@ import static de.robv.android.xposed.XposedBridge.log;
 
 public class MyModule implements IXposedHookLoadPackage {
     private static final String TAG_GL = "MyModule-GL";
+
     private static final String TAG_GS = "MyModule-GS";
 
     private HashMap<String, HashMap<String, ArrayList<String>>> hookList = new HashMap<String, HashMap<String, ArrayList<String>>>() {{
@@ -56,6 +58,10 @@ public class MyModule implements IXposedHookLoadPackage {
 //            //WiFi
 //            put("getSSID", new ArrayList<>());
 //            put("getBSSID", new ArrayList<>());
+        }});
+        put(NetworkInterface.class.getName(), new HashMap<String, ArrayList<String>>() {{
+            //MAC地址
+            put("getHardwareAddress", new ArrayList<>());
         }});
 //        put("android.net.wifi.WifiManager", new HashMap<String, ArrayList<String>>() {{
 //            //WiFi
@@ -148,7 +154,7 @@ public class MyModule implements IXposedHookLoadPackage {
             return;
         }
 
-        Log.d(logTag, "444 handleLoadPackage: packageName = " + lpp.packageName + ", processName = " + lpp.processName);
+        Log.d(logTag, "555 handleLoadPackage: packageName = " + lpp.packageName + ", processName = " + lpp.processName);
         Log.d(logTag, "package classloader: " + lpp.classLoader.toString());
 
 //        HashMap<String, HashMap<String, ArrayList<Object>>>
