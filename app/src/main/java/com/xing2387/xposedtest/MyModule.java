@@ -185,7 +185,8 @@ public class MyModule implements IXposedHookLoadPackage {
                 XposedBridge.hookMethod(method, new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        if ("android.provider.Settings.Secure".equals(className) &&
+                        if (("android.provider.Settings.Secure".equals(className) ||
+                                "android.provider.Settings$Secure".equals(className)) &&
                                 "getString".equals(methodName)) {
                             Object value = param.args[param.args.length - 1];
                             if (value instanceof String) {
