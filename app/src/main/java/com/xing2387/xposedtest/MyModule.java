@@ -11,6 +11,7 @@ import android.net.wifi.WifiInfo;
 import android.os.Handler;
 import android.os.WorkSource;
 import android.provider.Settings;
+import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -61,6 +62,10 @@ public class MyModule implements IXposedHookLoadPackage {
                 add("int");
             }});
             put("getSimOperatorNameForPhone", new ArrayList<String>() {{  //运营商
+                add("int");
+            }});
+            put("listen", new ArrayList<String>() {{  //READ_PHONE_STATE
+                add(PhoneStateListener.class.getName());
                 add("int");
             }});
         }});
@@ -132,6 +137,9 @@ public class MyModule implements IXposedHookLoadPackage {
 
         //GPS
         put("android.location.LocationManager", new HashMap<String, ArrayList<String>>() {{
+            put("getLastKnownLocation", new ArrayList<String>() {{
+                add(String.class.getName());
+            }});
         }});
 
         put("android.accounts.AccountManager", new HashMap<String, ArrayList<String>>() {{
@@ -155,7 +163,7 @@ public class MyModule implements IXposedHookLoadPackage {
 
         put("android.app.ActivityManager", new HashMap<String, ArrayList<String>>() {{
             //安装列表
-            put("getRunningAppProcesses", new ArrayList<>());
+//            put("getRunningAppProcesses", new ArrayList<>());
         }});
 
         put("com.netease.gl.exoplayer.util.FreeFlowUtil", new HashMap<String, ArrayList<String>>() {{
@@ -191,7 +199,7 @@ public class MyModule implements IXposedHookLoadPackage {
             return;
         }
 
-        Log.d(logTag, "1111 handleLoadPackage: packageName = " + lpp.packageName + ", processName = " + lpp.processName);
+        Log.d(logTag, "333 handleLoadPackage: packageName = " + lpp.packageName + ", processName = " + lpp.processName);
         Log.d(logTag, "package classloader: " + lpp.classLoader.toString());
 
 //        HashMap<String, HashMap<String, ArrayList<Object>>>
