@@ -166,10 +166,9 @@ public class MyModule implements IXposedHookLoadPackage {
 //            put("getRunningAppProcesses", new ArrayList<>());
         }});
 
-        put("com.netease.gl.exoplayer.util.FreeFlowUtil", new HashMap<String, ArrayList<String>>() {{
-            //安装列表
-            put("isFreeFlow", new ArrayList<String>() {{
-                add(Context.class.getName());
+        put("android.content.ContextWrapper", new HashMap<String, ArrayList<String>>() {{
+            put("getSystemService", new ArrayList<String>() {{
+                add(String.class.getName());
             }});
         }});
     }};
@@ -177,10 +176,10 @@ public class MyModule implements IXposedHookLoadPackage {
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpp) {
         hookGL(lpp);
-        hookGS(lpp);
-        hookWithPackageName(lpp, "com.example.hmcpdemo", "MyModule-hmcp");
-        hookWithPackageName(lpp, "com.netease.nis.smartercaptcha", "MyModule-yidun");
-        hookWithPackageName(lpp, "com.netease.freecardandroid", "MyModule-fc");
+//        hookGS(lpp);
+//        hookWithPackageName(lpp, "com.example.hmcpdemo", "MyModule-hmcp");
+//        hookWithPackageName(lpp, "com.netease.nis.smartercaptcha", "MyModule-yidun");
+//        hookWithPackageName(lpp, "com.netease.freecardandroid", "MyModule-fc");
 
 //        hookGetImei(lpp);
     }
@@ -232,7 +231,7 @@ public class MyModule implements IXposedHookLoadPackage {
                             if (value instanceof String) {
                                 if (Settings.Secure.ANDROID_ID.equals(value)) {
                                     try {
-                                        throw new RuntimeException("打印" + className + "#" + methodName + "调用栈 - " + value);
+                                        throw new RuntimeException("打印" + className + "#" + methodName + " 调用栈 - " + value);
                                     } catch (Throwable e) {
 //                                        log(e);
                                         Log.d(logTag, "\n\n\n-----------------------------------------------------------");
@@ -241,17 +240,45 @@ public class MyModule implements IXposedHookLoadPackage {
 
                                     }
                                 } else {
-                                    String logMsg = "调用了 android.provider.Settings.Secure#getString() - " + value;
+                                    String logMsg = "调用了 " + className + "#" + methodName + " - " + value;
 //                                    log(logMsg);
                                     Log.d(logTag, "\n\n\n-----------------------------------------------------------");
                                     Log.e(logTag, logMsg);
                                     Log.d(logTag, "-----------------------------------------------------------\n\n\n");
                                 }
                             }
+
                             return;
                         }
+                        if (!TextUtils.isEmpty(className) &&
+                                className.equals("android.content.ContextWrapper") &&
+                                "getSystemService".equals(methodName)) {
+                            Object value = param.args[param.args.length - 1];
+                            if (value instanceof String) {
+                                if (Context.TELEPHONY_SERVICE.equals(value)) {
+                                    try {
+                                        throw new RuntimeException("打印" + className + "#" + methodName + " 调用栈 - " + value);
+                                    } catch (Throwable e) {
+//                                        log(e);
+                                        Log.d(logTag, "\n\n\n-----------------------------------------------------------");
+                                        Log.e(logTag, "beforeHookedMethod: ", e);
+                                        Log.d(logTag, "-----------------------------------------------------------\n\n\n");
+
+                                    }
+                                } else {
+                                    String logMsg = "调用了 " + className + "#" + methodName + " - " + value;
+//                                    log(logMsg);
+                                    Log.d(logTag, "\n\n\n-----------------------------------------------------------");
+                                    Log.e(logTag, logMsg);
+                                    Log.d(logTag, "-----------------------------------------------------------\n\n\n");
+                                }
+                            }
+
+                            return;
+                        }
+
                         try {
-                            throw new RuntimeException("打印" + className + "#" + methodName + "调用栈");
+                            throw new RuntimeException("打印" + className + "#" + methodName + " 调用栈");
                         } catch (Throwable e) {
 //                            log(e);
                             Log.d(logTag, "\n\n\n-----------------------------------------------------------");
