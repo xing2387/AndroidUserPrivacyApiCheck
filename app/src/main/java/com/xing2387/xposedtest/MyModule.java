@@ -5,6 +5,8 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanSettings;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
 import android.net.wifi.WifiInfo;
@@ -17,8 +19,11 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.lang.reflect.Method;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -123,6 +128,12 @@ public class MyModule implements IXposedHookLoadPackage {
             put("getInstalledModules", new ArrayList<String>() {{
                 add("int");
             }});
+            put("queryIntentActivities", new ArrayList<String>() {{
+                addAll(Arrays.asList(Intent.class.getName(), "int"));
+            }});
+            put("getPackagesForUid", new ArrayList<String>() {{
+                add("int");
+            }});
         }});
 
         put("android.hardware.SensorManager", new HashMap<String, ArrayList<String>>() {{
@@ -163,13 +174,30 @@ public class MyModule implements IXposedHookLoadPackage {
 
         put("android.app.ActivityManager", new HashMap<String, ArrayList<String>>() {{
             //安装列表
-//            put("getRunningAppProcesses", new ArrayList<>());
+            put("getRunningAppProcesses", new ArrayList<>());
+            put("getRunningTasks", new ArrayList<String>() {{
+                add("int");
+            }});
         }});
 
         put("android.content.ContextWrapper", new HashMap<String, ArrayList<String>>() {{
             put("getSystemService", new ArrayList<String>() {{
                 add(String.class.getName());
             }});
+            put("startService", new ArrayList<String>() {{
+                add(Intent.class.getName());
+            }});
+            put("bindService", new ArrayList<String>() {{
+                addAll(Arrays.asList(Intent.class.getName(), ServiceConnection.class.getName()));
+            }});
+        }});
+
+        //网络请求
+        put(Inet4Address.class.getName(), new HashMap<String, ArrayList<String>>() {{
+            put("getHostAddress", new ArrayList<>());
+        }});
+        put(Inet6Address.class.getName(), new HashMap<String, ArrayList<String>>() {{
+            put("getHostAddress", new ArrayList<>());
         }});
     }};
 

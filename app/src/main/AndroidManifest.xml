@@ -21,7 +21,7 @@
             android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="用Xposed做一些测试" />
+            android:value="隐私api调用检测" />
         <meta-data
             android:name="xposedminversion"
             android:value="53" />
